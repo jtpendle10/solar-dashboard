@@ -47,11 +47,11 @@
     <div id="response">Loading...</div>
 
     <script>
-        const apiUrl = 'https://solar-backend-210u.onrender.com/proxy'; // update after Render deploy
+const apiUrl = 'https://solar-backend-210u.onrender.com/proxy'; // update after Render deploy
 
-        const headers = { 'Content-Type': 'application/json' };
-        const now = new Date();
-const oneHourAgo = new Date(now.getTime() - 60 * 60 * 1000);
+const headers = { 'Content-Type': 'application/json' };
+const now = new Date();
+const oneHourAgo = new Date(now.getTime() - 30 * 60 * 1000);
 
 const to = now.toISOString();
 const from = oneHourAgo.toISOString();
@@ -92,7 +92,7 @@ const data = {
         .then(result => {
             const nodes = result.data.mainServices.nodes[0].meterDemand.data.nodes;
             const total = nodes.reduce((sum, node) => sum + node.data, 0);
-            document.getElementById('response').innerText = `Total Solar Output: ${total.toFixed(2)}`;
+            document.getElementById('response').innerText = `Current Metered Solar Output: ${total.toFixed(2)} kW`;
         })
         .catch(err => {
             console.error(err);
