@@ -109,6 +109,10 @@ const data = {
 
     document.getElementById('response').innerText =
         `${total.toFixed(2)} kW`;
+
+     const updatedTime = new Date();
+     document.getElementById('last-updated').innerText =
+            `Last updated: ${updatedTime.toLocaleString()}`;
 })
         .catch(err => {
             console.error(err);
