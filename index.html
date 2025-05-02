@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Solar Dashboard</title>
+    <title>Solar Demand</title>
     <style>
         body {
     font-family: 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
@@ -90,10 +90,20 @@ const data = {
         })
         .then(res => res.json())
         .then(result => {
-            const nodes = result.data.mainServices.nodes[0].meterDemand.data.nodes;
-            const total = nodes.reduce((sum, node) => sum + node.data, 0);
-            document.getElementById('response').innerText = `${total.toFixed(2)} kW`;
-        })
+            const mainServiceNodes = result.data.mainServices.nodes;
+
+            const total = mainServiceNodes.reduce((sum, serviceNode) => {
+                const dataNodes = serviceNode.meterDemand.data.nodes;
+                if (dataNodes.length > 0) {
+                    const lastDataValue = dataNodes[dataNodes.length - 1].data;
+                    return sum + lastDataValue;
+        }
+        return sum;
+    }, 0);
+
+    document.getElementById('response').innerText =
+        `${total.toFixed(2)} kW`;
+})
         .catch(err => {
             console.error(err);
             document.getElementById('response').innerText = 'Error loading data';
