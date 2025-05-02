@@ -36,31 +36,38 @@
         const apiUrl = 'https://solar-backend-210u.onrender.com/proxy'; // update after Render deploy
 
         const headers = { 'Content-Type': 'application/json' };
-        const data = {
-            query: `query($filter: MainServiceFilter, $from: String!, $to: String!, $aggregation: MetricDataAggregationMethod!) {
-                mainServices(filter: $filter) {
-                    nodes {
-                        type
-                        meterDemand {
-                            data(from: $from, to: $to, aggregation: $aggregation) {
-                                nodes {
-                                    time
-                                    data
-                                    label
-                                    metadata
-                                }
-                            }
+        const now = new Date();
+const oneHourAgo = new Date(now.getTime() - 60 * 60 * 1000);
+
+const to = now.toISOString();
+const from = oneHourAgo.toISOString();
+
+const data = {
+    query: `query($filter: MainServiceFilter, $from: String!, $to: String!, $aggregation: MetricDataAggregationMethod!) {
+        mainServices(filter: $filter) {
+            nodes {
+                type
+                meterDemand {
+                    data(from: $from, to: $to, aggregation: $aggregation) {
+                        nodes {
+                            time
+                            data
+                            label
+                            metadata
                         }
                     }
                 }
-            }`,
-            variables: {
-                filter: { type: { equalTo: "SOLAR" } },
-                from: "2025-04-20",
-                to: "2025-05-30",
-                aggregation: "LAST"
             }
-        };
+        }
+    }`,
+    variables: {
+        filter: { type: { equalTo: "SOLAR" } },
+        from: from,
+        to: to,
+        aggregation: "LAST"
+    }
+};
+
 
         fetch(apiUrl, {
             method: 'POST',
