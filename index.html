@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Solar Dashboard</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background-color: #9AAA4D;
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+        }
+        h1 {
+            font-size: 3rem;
+        }
+        #response {
+            background-color: #e0e0e0;
+            color: #111;
+            padding: 2rem 4rem;
+            margin-top: 2rem;
+            border-radius: 10px;
+            font-size: 2rem;
+        }
+    </style>
+</head>
+<body>
+    <h1>Solar Dashboard</h1>
+    <div id="response">Loading...</div>
+
+    <script>
+        const apiUrl = 'https://solar-backend.onrender.com/proxy'; // update after Render deploy
+
+        const headers = { 'Content-Type': 'application/json' };
+        const data = {
+            query: `query($mainServiceId: Int!, $filter: MainServiceFilter, $from: String!, $to: String!, $aggregation: MetricDataAggregationMethod!) {
+                mainServices(filter: $filter) {
+                    nodes {
+                        type
+                        meterDemand {
+                            data(from: $from, to: $to, aggregation: $aggregation) {
+                                nodes {
+                                    time
+                                    data
+                                    label
+                                    metadata
+                                }
+                            }
+                        }
+                    }
+                }
+            }`,
+            variables: {
+                mainServiceId: null,
+                filter: { type: { equalTo: "SOLAR" } },
+                from: "2025-04-20",
+                to: "2025-05-30",
+                aggregation: "LAST"
+            }
+        };
+
+        fetch(apiUrl, {
+            method: 'POST',
+            headers: headers,
+            body: JSON.stringify(data)
+        })
+        .then(res => res.json())
+        .then(result => {
+            const nodes = result.data.mainServices.nodes[0].meterDemand.data.nodes;
+            const total = nodes.reduce((sum, node) => sum + node.data, 0);
+            document.getElementById('response').innerText = `Total Solar Output: ${total.toFixed(2)}`;
+        })
+        .catch(err => {
+            console.error(err);
+            document.getElementById('response').innerText = 'Error loading data';
+        });
+    </script>
+</body>
+</html>
