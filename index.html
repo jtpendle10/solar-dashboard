@@ -43,7 +43,7 @@
 </head>
 <body>
     <img class="logo" src="https://ndustrial.io/wp-content/uploads/2020/08/Group-642.png" alt="Ndustrial Logo">
-    <h1>Solar Dashboard</h1>
+    <h1>Current Metered Solar Generation</h1>
     <div id="response">Loading...</div>
 
     <script>
@@ -92,7 +92,7 @@ const data = {
         .then(result => {
             const nodes = result.data.mainServices.nodes[0].meterDemand.data.nodes;
             const total = nodes.reduce((sum, node) => sum + node.data, 0);
-            document.getElementById('response').innerText = `Current Metered Solar Output: ${total.toFixed(2)} kW`;
+            document.getElementById('response').innerText = `${total.toFixed(2)} kW`;
         })
         .catch(err => {
             console.error(err);
