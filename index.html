@@ -37,7 +37,7 @@
 
         const headers = { 'Content-Type': 'application/json' };
         const data = {
-            query: `query($mainServiceId: Int!, $filter: MainServiceFilter, $from: String!, $to: String!, $aggregation: MetricDataAggregationMethod!) {
+            query: `query($filter: MainServiceFilter, $from: String!, $to: String!, $aggregation: MetricDataAggregationMethod!) {
                 mainServices(filter: $filter) {
                     nodes {
                         type
@@ -55,7 +55,6 @@
                 }
             }`,
             variables: {
-                mainServiceId: null,
                 filter: { type: { equalTo: "SOLAR" } },
                 from: "2025-04-20",
                 to: "2025-05-30",
